@@ -1,0 +1,84 @@
+/* Reset some default browser styles */
+body, h1, h2, h3, p, form, button {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body takes at least the full viewport height */
+}
+
+.container {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.banner {
+    background-color: #3498db;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+
+.banner-head {
+    font-size: 2em;
+}
+
+.l-content {
+    flex: 1;
+    margin: 0 auto;
+    padding: 50px;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+select, input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.pure-button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    margin-right: 5px;
+}
+
+.footer {
+    background: #111;
+    color: #888;
+    text-align: center;
+    padding: 10px;
+}
+
+.footer a {
+    color: #ddd;
+}
+
+/* Define common styles for success and error buttons */
+.button-success,
+.button-error {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Specific styles for success button */
+.button-success {
+    background: rgb(28, 184, 65);
+}
+
+/* Specific styles for error button */
+.button-error {
+    background: rgb(202, 60, 60);
+}
