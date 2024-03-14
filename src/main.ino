@@ -91,12 +91,31 @@ void loop()
         {
 
             String dataString = file.readStringUntil('\n');
-            int intData = dataString.toInt();
-            intData = intData * 10;
+
+
+            /*
+             * data in file is stored in mmHg eg 60.80
+             * corresponds to blood pressure of the patient             
+             * 
+             * 0-3v == 0 - 300 mmhg  
+             */
+//            Serial.print("Value Read from file: ");
+//            Serial.println(dataString);
             
-            Serial.print("Read from file: ");
-            Serial.println(intData);
-            transmitToDAC(intData);
+
+
+        
+            int intData = dataString.toFloat() * 100; // val in file is stored as float with 2d point
+                                                          // taking away decimals by * 100 and storing as float
+//            Serial.print("intData: ");
+//            Serial.println(intData);
+            
+            int dacValue = map(intData, 0, 30000, 0, 4095); // 0 - 30,000 corresponds to 0-3v or 0-4096
+//            Serial.print("dacValue: ");
+//            Serial.println(dacValue);
+
+            
+            transmitToDAC(dacValue);
         }
         timerFlag = false;
 
@@ -116,7 +135,7 @@ void readAndTransmitFile(const char* filename)
 
 void transmitToDAC(int value)
 {
-    Serial.print("ADC Write for: ");
-    Serial.println(value);
+//    Serial.print("ADC Write for: ");
+//    Serial.println(value);
     dac.setVoltage(value, false);
 }
