@@ -7,17 +7,32 @@
 Adafruit_MCP4725 dac;
 #define DAC_ADDRESS 0x60
 
-const char *ssid = "The Goblin Warren";
-const char *password = "yellowwhale161";
-
-// Function prototypes
-void readAndTransmitFile(const char *filename);
-void transmitToDAC(int value);
+const char* ssid = "Verizon_J9SPGP";
+const char* password = "cab3-azure-plot";
 
 AsyncWebServer server(80);
 
+hw_timer_t* My_timer = NULL;
+
+bool timerFlag = false;
+bool onFlag = false;
+File file;
+
+
+
+void IRAM_ATTR onTimer()
+{
+    timerFlag = true;
+}
+
 void setup()
 {
+
+    My_timer = timerBegin(0, 80, true);
+    timerAttachInterrupt(My_timer, &onTimer, true);
+    timerAlarmWrite(My_timer, 8000, true);
+    timerAlarmEnable(My_timer);
+
     Serial.begin(115200);
 
     dac.begin(DAC_ADDRESS);
@@ -37,6 +52,13 @@ void setup()
 
     Serial.println(WiFi.localIP());
 
+
+    readAndTransmitFile("/demo.txt"); 
+    
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
+        request->send(SPIFFS, "/index.html", String(), false);
+    });
+
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(SPIFFS, "/index.html", String(), false); });
 
@@ -54,68 +76,44 @@ void setup()
 
     server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-        // String selectedWaveform = request->getParam("waveform-type")->value();
-        // Serial.println(selectedWaveform);
+                onFlag = true;
+          });
 
-        // String filePath;
-        // if (selectedWaveform == "1") {
-        //     filePath = "/demo.txt";
-        // } else if (selectedWaveform == "2") {
-        //     filePath = "/arrhythmia.txt";
-        // } else if (selectedWaveform == "3") {
-        //     filePath = "/arrhythmia2.txt";
-        // } else if (selectedWaveform == "4") {
-        //     filePath = "/fluids.txt";
-        // } else if (selectedWaveform == "5") {
-        //     filePath = "/ephedrine.txt";
-        // } else if (selectedWaveform == "6") {
-        //     filePath = "/norepi.txt";
-        // } else if (selectedWaveform == "7") {
-        //     filePath = "/norepi-arth.txt";
-        // } else if (selectedWaveform == "8") {
-        //     filePath = "/phenylephrine.txt";
-        // } else {
-        //     request->send(400, "text/plain", "Invalid waveform selection");
-        //     return;
-        // }
-
-        // readAndTransmitFile(filePath.c_str());
-        readAndTransmitFile("/demo.txt"); });
-
-    // request->send(200, "text/plain", "Data transmission started for " + selectedWaveform); });
 
     server.begin();
 }
 
 void loop()
 {
+    if (timerFlag & onFlag)
+    {
+        if (file.available())
+        {
+
+            String dataString = file.readStringUntil('\n');
+            int intData = dataString.toInt();
+            intData = intData * 10;
+            
+            Serial.print("Read from file: ");
+            Serial.println(intData);
+            transmitToDAC(intData);
+        }
+        timerFlag = false;
+
+//        file.close();
+    }
 }
 
-void readAndTransmitFile(const char *filename)
+void readAndTransmitFile(const char* filename)
 {
-    File file = SPIFFS.open(filename, "r");
+    file = SPIFFS.open(filename, "r");
     if (!file)
     {
         Serial.println("Failed to open file for reading");
         return;
     }
-
-    while (file.available())
-    {
-        String dataString = file.readStringUntil('\n');
-        int intData = dataString.toInt();
-
-        Serial.print("Read from file: ");
-        Serial.println(intData);
-        transmitToDAC(intData);
-
-        delay(2000);
-    }
-
-    file.close();
 }
 
-// Function to transmit data to DAC
 void transmitToDAC(int value)
 {
     Serial.print("ADC Write for: ");
