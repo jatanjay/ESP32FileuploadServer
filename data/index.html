@@ -1,98 +1,188 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="pure.css">
-    <link rel="stylesheet" href="grids-responsive-min.css">
-    <link rel="stylesheet" href="styles.css">
-    <script src="app.js"></script>
-    <title>Retia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Retia</title>
+  <link rel="stylesheet" href="pure.css">
+  <link rel="stylesheet" href="grids-responsive-min.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-
-    <div class="banner">
-        <h1 class="banner-head">
-            Retia CP200
-        </h1>
+  <div class="banner">
+    <h3 class="banner-head">
+      Retia CP200
+    </h3>
+  </div>
+  <div class="container">
+    <div class="upload-box">
+      <div class="content-box">
+        <p><span id="freespiffs">%FREESPIFFS%</span> of <span id="totalspiffs">%TOTALSPIFFS%</span> left</p>
+      </div>
+      <p>
+        <button type="button" class="pure-button button-upload" onclick="showUploadButtonFancy()">Upload File</button>
+      </p>
+      <p id="status"></p>
+      <p id="detailsheader"></p>
+      <p id="details"></p>
     </div>
 
-    <div class="l-content">
-        <form class="pure-form pure-g">
-            <div class="pure-u-1">
-                <fieldset>
-                    <label for="waveform-type">Waveform</label>
-                    <select id="waveform-type" class="pure-u-23-24" required>
-                        <option value="" disabled selected>Select Waveform</option>
-                        <option value="1">Demo Mode BP</option>
-                        <option value="2">Arrhythmia</option>
-                        <option value="3">Arrhythmia2</option>
-                        <option value="4">Fluids</option>
-                        <option value="5">Ephedrine</option>
-                        <option value="6">Norepi</option>
-                        <option value="7">Norepi-Arth</option>
-                        <option value="8">Phenylephrine</option>
-                    </select>
-                </fieldset>
-            </div>
-        </form>
-        <!-- <form class="pure-form pure-g">
-            <div class="pure-u-1-2">
-                <fieldset>
-                    <label for="amplitude">Amplitude</label>
-                    <select id="amplitude" class="pure-u-11-12" required>
-                        <option value="" disabled selected>Select Amplitude</option>
-                        <option>0.00 V</option>
-                        <option>0.25 V</option>
-                        <option>0.50 V</option>
-                        <option>0.75 V</option>
-                        <option>1.00 V</option>
-                        <option>1.25 V</option>
-                        <option>1.50 V</option>
-                        <option>1.75 V</option>
-                        <option>2.00 V</option>
-                        <option>2.25 V</option>
-                        <option>2.50 V</option>
-                        <option>2.75 V</option>
-                        <option>3.00 V</option>
-                    </select>
-                </fieldset>
-            </div>
-            <div class="pure-u-1-2">
-                <fieldset>
-                    <label for="frequency">Frequency</label>
-                    <select id="frequency" class="pure-u-11-12" required>
-                        <option value="" disabled selected>Select Frequency</option>
-                        <option>0 Hz</option>
-                        <option>10 Hz</option>
-                        <option>20 Hz</option>
-                        <option>30 Hz</option>
-                        <option>40 Hz</option>
-                        <option>50 Hz</option>
-                        <option>60 Hz</option>
-                        <option>70 Hz</option>
-                        <option>80 Hz</option>
-                        <option>90 Hz</option>
-                        <option>100 Hz</option>
-                        <option>110 Hz</option>
-                        <option>120 Hz</option>
-                        <option>125 Hz</option>
-                    </select>
-                </fieldset>
-            </div>
-        </form> -->
+    <div class="controls-container">
+      <form class="pure-form pure-g">
+        <div class="pure-u-1">
+          <fieldset>
+            <label for="waveform-type">Waveform</label>
+            <select id="waveform-type" class="pure-u-23-23" required>
+              <option value="" disabled selected>Select File</option>
+            </select>
+          </fieldset>
+        </div>
+      </form>
 
-        <button type="button" class="pure-button button-success" id="onButton">On</button>
-
-        <button type="submit" class="pure-button button-error">Off</button>
+      <button type="button" class="pure-button button-success" id="onButton">On</button>
+      <button type="button" class="pure-button button-error" id="offButton">Off</button>
     </div>
 
-    <div class="footer l-box">
-        <p>© v.1.0.0 2024 <a href="https://www.quiretech.net/">QuireTech LLC</a></p>
-    </div>
+  </div>
 
+  <div class="footer l-box">
+    <p>© v.1.0.0 2024 <a href="https://www.quiretech.net/">QuireTech LLC</a></p>
+  </div>
+
+
+
+  <script>
+
+
+
+
+    function populateFileList() {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/listfiles", false);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+          var fileList = xhr.responseText.split("\n"); // Split the response into an array of file names
+          console.log(fileList)
+          var select = document.getElementById("waveform-type");
+          select.innerHTML = ""; // Clear existing options
+          fileList.forEach(function (fileName) {
+            var option = document.createElement("option");
+            option.text = fileName;
+            option.value = fileName;
+            select.add(option);
+          });
+        }
+      };
+      xhr.send();
+    }
+
+    window.onload = function () {
+      populateFileList();
+    };
+
+
+
+
+
+
+    function logoutButton() {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/logout", true);
+      xhr.send();
+      setTimeout(function () { window.open("/logged-out", "_self"); }, 1000);
+    }
+    function rebootButton() {
+      document.getElementById("status").innerHTML = "Invoking Reboot ...";
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/reboot", true);
+      xhr.send();
+      window.open("/reboot", "_self");
+    }
+    function listFilesButton() {
+      xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("GET", "/listfiles", false);
+      xmlhttp.send();
+      document.getElementById("detailsheader").innerHTML = "<h3>Files<h3>";
+      document.getElementById("details").innerHTML = xmlhttp.responseText;
+    }
+    function downloadDeleteButton(filename, action) {
+      var urltocall = "/file?name=" + filename + "&action=" + action;
+      xmlhttp = new XMLHttpRequest();
+      if (action == "delete") {
+        xmlhttp.open("GET", urltocall, false);
+        xmlhttp.send();
+        document.getElementById("status").innerHTML = xmlhttp.responseText;
+        xmlhttp.open("GET", "/listfiles", false);
+        xmlhttp.send();
+        document.getElementById("details").innerHTML = xmlhttp.responseText;
+      }
+      if (action == "download") {
+        document.getElementById("status").innerHTML = "";
+        window.open(urltocall, "_blank");
+      }
+    }
+    function showUploadButtonFancy() {
+      document.getElementById("detailsheader").innerHTML = "<p>Select File<p>"
+      document.getElementById("status").innerHTML = "";
+      var uploadform = "<form method = \"POST\" action = \"/\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"data\"/><input type=\"submit\" name=\"upload\" value=\"Upload\" title = \"Upload File\"></form>"
+      document.getElementById("details").innerHTML = uploadform;
+      var uploadform =
+        "<form id=\"upload_form\" enctype=\"multipart/form-data\" method=\"post\">" +
+        "<input type=\"file\" name=\"file1\" id=\"file1\" onchange=\"uploadFile()\"><br>" +
+        "<div class=\"progress-container\">" +
+        "<progress id=\"progressBar\" value=\"0\" max=\"100\"></progress>" +
+        "<div id=\"progressBarText\">0%</div>" +
+        "</div>" +
+        "<h3 id=\"status\"></h3>" +
+        "<p id=\"loaded_n_total\"></p>" +
+        "</form>";
+      document.getElementById("details").innerHTML = uploadform;
+    }
+    function _(el) {
+      return document.getElementById(el);
+    }
+    function uploadFile() {
+      var file = _("file1").files[0];
+      // alert(file.name+" | "+file.size+" | "+file.type);
+      var formdata = new FormData();
+      formdata.append("file1", file);
+      var ajax = new XMLHttpRequest();
+      ajax.upload.addEventListener("progress", progressHandler, false);
+      ajax.addEventListener("load", completeHandler, false); // doesnt appear to ever get called even upon success
+      ajax.addEventListener("error", errorHandler, false);
+      ajax.addEventListener("abort", abortHandler, false);
+      ajax.open("POST", "/");
+      ajax.send(formdata);
+    }
+    function progressHandler(event) {
+      //_("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total; // event.total doesnt show accurate total file size
+      _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes";
+      var percent = (event.loaded / event.total) * 100;
+      _("progressBar").value = Math.round(percent);
+      _("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
+      if (percent >= 100) {
+        _("status").innerHTML = "Please wait, writing file to filesystem";
+      }
+    }
+    function completeHandler(event) {
+      _("status").innerHTML = "Upload Complete";
+      _("progressBar").value = 0;
+      xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("GET", "/listfiles", false);
+      xmlhttp.send();
+      document.getElementById("status").innerHTML = "File Uploaded";
+      document.getElementById("detailsheader").innerHTML = "<h3>Files<h3>";
+      document.getElementById("details").innerHTML = xmlhttp.responseText;
+    }
+    function errorHandler(event) {
+      _("status").innerHTML = "Upload Failed";
+    }
+    function abortHandler(event) {
+      _("status").innerHTML = "inUpload Aborted";
+    }
+  </script>
 </body>
 
 </html>

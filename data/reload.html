@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="banner">
+        <h3 class="banner-head">
+            Retia CP200
+        </h3>
+    </div>
+
+    <div class="container">
+        <div class="upload-box">
+
+            <h3>
+                Rebooting, back to app in <span id="countdown">30</span> seconds
+            </h3>
+        </div>
+    </div>
+
+    <div class="footer l-box">
+        <p>© v.1.0.0 2024 <a href="https://www.quiretech.net/">QuireTech LLC</a></p>
+    </div>
+
+    <script type="text/javascript">
+        var seconds = 6;
+        function countdown() {
+            seconds = seconds - 1;
+            if (seconds < 0) {
+                window.location = "/";
+            } else {
+                document.getElementById("countdown").innerHTML = seconds;
+                window.setTimeout("countdown()", 1000);
+            }
+        }
+        countdown();
+    </script>
+</body>
+
+</html>
