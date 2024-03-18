@@ -149,6 +149,7 @@
         var urltocall = "/file?name=" + filename + "&action=" + action;
         xmlhttp = new XMLHttpRequest();
         if (action == "delete") {
+          alert("Are you sure you want to delete?");
           xmlhttp.open("GET", urltocall, false);
           xmlhttp.send();
           document.getElementById("status").innerHTML = xmlhttp.responseText;
