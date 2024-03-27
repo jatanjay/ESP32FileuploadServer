@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+  <html lang="en">
+  	<head>
+  		<meta name="viewport" content="width=device-width,initial-scale=1">
+  		<meta charset="UTF-8">
+  		<title>Retia</title>
+  		<style>
+			body {
+                background-color: #f4f4f4;
+                display: flex;
+                flex-direction: column;
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                min-height: 100vh;
+                overflow-x: hidden;
+                padding-bottom: 10px
+            }
+
+			button {
+                border: none;
+                border-radius: 5px;
+                color: #fff;
+                cursor: pointer;
+                margin: 5px;
+                padding: 10px 20px
+            }
+
+
+  			.button-upload {
+  				background-color: #007bff;
+  				border: none;
+  				border-radius: 5px;
+  				color: #fff;
+  				cursor: pointer;
+  				margin: 5px;
+  				padding: 10px 20px
+  			}
+
+  			.banner,
+  			.container,
+  			.footer {
+  				padding: 10px;
+  				text-align: center
+  			}
+
+  			.banner {
+  				background-color: #04263d;
+  				color: #fff
+  			}
+
+  			.container {
+  				background-color: #f9f9f9;
+  				border: 1px solid #ccc;
+  				border-radius: 10px;
+  				box-shadow: 0 8px 15px #0003;
+  				flex: 1;
+  				margin: 0 auto;
+  				max-width: 90%
+  			}
+
+  			.footer {
+  				background: #111;
+  				color: #888;
+  				margin-top: auto
+  			}
+  		</style>
+  	</head>
+  	<body>
+  		<div class="banner">
+  			<h3 class="banner-head">Retia CP200</h3>
+			  <a href="/">
+				<svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+					<path fill-rule="evenodd" clip-rule="evenodd" d="M11.3103 1.77586C11.6966 1.40805 12.3034 1.40805 12.6897 1.77586L20.6897 9.39491L23.1897 11.7759C23.5896 12.1567 23.605 12.7897 23.2241 13.1897C22.8433 13.5896 22.2103 13.605 21.8103 13.2241L21 12.4524V20C21 21.1046 20.1046 22 19 22H14H10H5C3.89543 22 3 21.1046 3 20V12.4524L2.18966 13.2241C1.78972 13.605 1.15675 13.5896 0.775862 13.1897C0.394976 12.7897 0.410414 12.1567 0.810345 11.7759L3.31034 9.39491L11.3103 1.77586ZM5 10.5476V20H9V15C9 13.3431 10.3431 12 12 12C13.6569 12 15 13.3431 15 15V20H19V10.5476L12 3.88095L5 10.5476ZM13 20V15C13 14.4477 12.5523 14 12 14C11.4477 14 11 14.4477 11 15V20H13Z" fill="#FFFFFF"/>
+				</svg>			
+			  </a>
+  		</div>
+  		<div class="container">
+  			<div class="upload-box">
+  				<p id="status"></p>
+  				<p id="detailsheader"></p>
+  				<p id="details"></p>
+                <p>
+  					<button type="button" class="button-upload" onclick="showUploadButtonFancy()">Upload File</button>
+  				</p>
+                <p>
+                
+                <p id="formatdetails"></p>
+                <button type="submit" class="button-upload" form="format-form" id="submit">Hard Reset</button>
+                <p>
+                <form method="POST" action="/format-spiffs" target="/" id="format-form">
+                </form>
+  			</div>
+  		</div>
+  		<div class="footer">
+  			<p>© v.1.0.0 2024 <a href="https://www.quiretech.net/">QuireTech LLC</a>
+  			</p>
+  		</div>
+  		<script>
+
+
+			document.addEventListener("DOMContentLoaded", function() {
+					var button = document.getElementById("submit");
+					var formatDetails = document.getElementById("formatdetails");
+
+					button.addEventListener("click", function() {
+						formatDetails.textContent = "Formatting, please wait...";
+					});
+				});
+
+
+
+
+  			function logoutButton() {
+  				var e = new XMLHttpRequest;
+  				e.open("GET", "/logout", !0), e.send(), setTimeout(function() {
+  					window.open("/logged-out", "_self")
+  				}, 1e3)
+  			}
+
+  			function rebootButton() {
+  				document.getElementById("status").innerHTML = "Invoking Reboot ...";
+  				var e = new XMLHttpRequest;
+  				e.open("GET", "/reboot", !0), e.send(), window.open("/reboot", "_self")
+  			}
+
+  			function listFilesButton() {
+  				xmlhttp = new XMLHttpRequest, xmlhttp.open("GET", "/listfiles", !1), xmlhttp.send(), document.getElementById("detailsheader").innerHTML = " <h3> Files On System <h3> ", document.getElementById("details").innerHTML = xmlhttp.responseText
+  			}
+
+  			function downloadDeleteButton(e, t) {
+  				var n = "/file?name=" + e + "&action=" + t;
+  				xmlhttp = new XMLHttpRequest, "delete" == t && (alert("Are you sure you want to delete?"), xmlhttp.open("GET", n, !1), xmlhttp.send(), document.getElementById("status").innerHTML = xmlhttp.responseText, xmlhttp.open("GET", "/listfiles", !1), xmlhttp.send(), document.getElementById("details").innerHTML = xmlhttp.responseText)
+  			}
+
+  			function showUploadButtonFancy() {
+  				document.getElementById("detailsheader").innerHTML = " <p> Select File </p>", document.getElementById("status").innerHTML = "";
+  				var e = '<form id="upload_form" enctype="multipart/form-data" method="post"><input type="file" name="file1" id="file1" onchange="uploadFile()"><br><div class="progress-container"><progress id="progressBar" value="0" max="100"></progress></div><h3 id="status"></h3><p id="loaded_n_total"></p></form>';
+  				document.getElementById("details").innerHTML = e
+  			}
+
+
+  			function _(e) {
+  				return document.getElementById(e)
+  			}
+
+  			function uploadFile() {
+  				var e = _("file1").files[0],
+  					t = new FormData;
+  				t.append("file1", e);
+  				var n = new XMLHttpRequest;
+  				n.upload.addEventListener("progress", progressHandler, !1), n.addEventListener("load", completeHandler, !1), n.addEventListener("error", errorHandler, !1), n.addEventListener("abort", abortHandler, !1), n.open("POST", "/"), n.send(t)
+  			}
+
+  			function progressHandler(e) {
+  				_("loaded_n_total").innerHTML = "Uploaded " + e.loaded + " bytes";
+  				var t = e.loaded / e.total * 100;
+  				_("progressBar").value = Math.round(t), _("status").innerHTML = Math.round(t) + "% uploaded... please wait", t >= 100 && (_("status").innerHTML = "Please wait, writing file to filesystem")
+  			}
+
+  			function completeHandler(e) {
+  				_("status").innerHTML = "Upload Complete", _("progressBar").value = 0, xmlhttp = new XMLHttpRequest, xmlhttp.open("GET", "/listfiles", !1), xmlhttp.send(), document.getElementById("status").innerHTML = "File Uploaded", document.getElementById("detailsheader").innerHTML = " <h3> Files On System </h3>", document.getElementById("details").innerHTML = xmlhttp.responseText
+  			}
+
+  			function errorHandler(e) {
+  				_("status").innerHTML = "Upload Failed"
+  			}
+
+  			function abortHandler(e) {
+  				_("status").innerHTML = "Upload Aborted"
+  			}
+
+        document.addEventListener("DOMContentLoaded", function() {
+          listFilesButton();
+        });
+        </script>
+    </body>
+</html>
