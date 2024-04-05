@@ -128,6 +128,21 @@ String listFiles(bool ishtml) {
   return returnText;
 }
 
+String listFiles_api() {
+  String returnText = "";
+  Serial.println("Listing files stored on SPIFFS");
+  File root = SPIFFS.open("/");
+  File foundfile = root.openNextFile();
+
+  while (foundfile) {
+    returnText += "File: " + String(foundfile.name()) +
+      " Size: " + String(foundfile.size()) + " kilobytes\n";
+    foundfile = root.openNextFile();
+  }
+  root.close();
+  return returnText;
+}
+
 String humanReadableSize(const size_t bytes) {
   if (bytes < 1024)
     return String(bytes) + " B";
@@ -218,6 +233,12 @@ void setup() {
 }
 
 void loop() {
+
+  if (Serial.available() > 0) {
+    String command = Serial.readStringUntil('\n');
+    handleSerialCommand(command);
+  }
+
   if (timerFlag) {
 
     if (onFlag) {
@@ -244,6 +265,8 @@ void loop() {
            * 0 - 30,000 corresponds to 0-3v or 0-4096
            */
           transmitToDAC(dacValue);
+          Serial.println(dacValue);
+
         } else {
           Serial.println("End Of File reached!");
           file_on_flash.close();
@@ -271,4 +294,85 @@ void loop() {
       Serial.println("SPIFFS formatting failed.");
     }
   }
+}
+
+void handleSerialCommand(String command) {
+  if (command.equals("listFiles")) {
+    String fileList = listFiles(false);
+    Serial.println(fileList);
+  } else if (command.equals("runDac")) {
+    selectFileToRunDAC();
+  } else if (command.equals("stopDac")) {
+    onFlag = false;
+    Serial.println("DAC subroutine stopped.");
+  } else {
+    Serial.println("[API] Invalid command");
+  }
+}
+
+void listFilesWithNumbers() {
+  Serial.println("Listing files stored on SPIFFS");
+  File root = SPIFFS.open("/");
+  File foundfile = root.openNextFile();
+
+  int fileNumber = 1;
+
+  while (foundfile) {
+    Serial.print("File ");
+    Serial.print(fileNumber);
+    Serial.print(": ");
+    Serial.print(foundfile.name());
+    Serial.print(" (Size: ");
+    Serial.print(foundfile.size());
+    Serial.println(" bytes)");
+
+    foundfile = root.openNextFile();
+    fileNumber++;
+  }
+
+  root.close();
+}
+
+void selectFileToRunDAC() {
+  Serial.println("Select a file to run DAC subroutine:");
+  listFilesWithNumbers();
+  Serial.println("Enter the number corresponding to the file you want to run:");
+
+  while (true) {
+    if (Serial.available() > 0) {
+      String selectedFileNumber = Serial.readStringUntil('\n');
+      int fileNumber = selectedFileNumber.toInt();
+      if (fileNumber > 0) {
+        runFileSubroutine(fileNumber);
+        break;
+      } else {
+        Serial.println("Invalid file number. Please enter a valid file number.");
+      }
+    }
+  }
+}
+
+void runFileSubroutine(int fileNumber) {
+  Serial.println("Running file subroutine for file number " + String(fileNumber));
+
+  File root = SPIFFS.open("/");
+  File foundfile = root.openNextFile();
+
+  int count = 1;
+
+  while (foundfile) {
+    if (count == fileNumber) {
+      Serial.print("Selected file: ");
+      Serial.println(foundfile.name());
+      strcpy(new_file, "/");
+      strcat(new_file, foundfile.name());
+      Serial.println(new_file);
+      onFlag = true;
+      break;
+    }
+    foundfile = root.openNextFile();
+    count++;
+  }
+
+  root.close();
 }
