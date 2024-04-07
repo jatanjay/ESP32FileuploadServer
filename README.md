@@ -2,7 +2,8 @@
 ## with SPIFFS Upload & MCP4725 Digital to Analog Transmission Routine
 
 ### Overview
-This repository contains a web application for ESP32 that enables users to upload, delete, download, and format files. Additionally, it includes a routine to transmit data from a medical dataset uploaded to an MCP4725 DAC peripheral.
+This repository contains a web application for ESP32 that enables users to upload, delete, download, and format files. 
+Additionally, it includes a routine to transmit data from a medical dataset uploaded on the SPIFFs using an MCP4725 DAC peripheral.
 
 ### Structure
 1. The final deployed application can be found under `V3/`.
