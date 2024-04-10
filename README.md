@@ -7,8 +7,8 @@ Additionally, it includes a routine to transmit data from a medical dataset uplo
 
 ### Screenshots
 
-![Screenshot1](shot_1.png)
-![Screenshot2](shot_2.png)
+![Screenshot1](shot_2.png)
+![Screenshot2](shot_1.png)
 
 ### Structure
 1. The final deployed application can be found under `V3/`.
