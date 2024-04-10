@@ -265,9 +265,8 @@ void handleSerialCommand(String command) {
     Serial.println("DAC subroutine stopped.");
   } else if (command) {
     Serial.println(command);
-    Serial.println("in handler");
-    onFlag = true;
-    timerFlag = true;
+    Serial.println("DAC Brute Transmit started ...");
+
     trasmitter(command);
   } else {
     Serial.println("[API] Invalid command");
@@ -300,9 +299,6 @@ void listFilesWithNumbers() {
 
 
 void trasmitter(String command){
-  // Serial.println("In Converter . . .");
-  // if (timerFlag) {
-    // if (onFlag) {
       String dataString = command;
       /*
         * Data in file is stored in mmHg e.g., 60.80
@@ -321,15 +317,7 @@ void trasmitter(String command){
         */
       transmitToDAC(dacValue);
       Serial.println(dacValue);
-      // }
-    // timerFlag = false;
-  // }
 }
-
-
-
-
-
 
 void selectFileToRunDAC() {
   Serial.println("Select a file to run DAC subroutine:");

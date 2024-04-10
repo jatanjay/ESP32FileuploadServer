@@ -7,8 +7,8 @@ Additionally, it includes a routine to transmit data from a medical dataset uplo
 
 ### Screenshots
 
-![Screenshot1](shot_2.png)
-![Screenshot2](shot_1.png)
+![Screenshot1](screenshots\shot_2.png)
+![Screenshot2](screenshots\shot_1.png)
 
 ### Structure
 1. The final deployed application can be found under `V3/`.
@@ -20,8 +20,9 @@ Additionally, it includes a routine to transmit data from a medical dataset uplo
 ### Tips if forking for your project
 1. There seems to be a limit to the amount of CSS that can be rendered at runtime when supplied using inline `<style>`. If your application requires elaborate CSS and/or frameworks, it's recommended to load the files onto SPIFFS and reference them in your HTML.
 2. Since this project necessitated SPIFFS formatting capability, the HTML, CSS, and JS files are stored in app storage as header files. If this isn't an issue for your project, it's better to have separate `.html`, `.css`, and `.js` files in SPIFFS.
-3. The app will be served at http://"your-hostname". By default -- retia_cp200. Refer V3/retia.ino for complete wifi config details.
+3. The app will be served at http://"your-hostname". By default --> retia_cp200. Refer V3/retia.ino for complete wifi config details.
 4. The app also has an API through which you can access the app via serial. You can test it using Docklight etc.
+5. V4/ is a "serial" version of the app. It has an API that can be used to transmit files directly via serial. Using com_script.py, you can trasmit your local file.
 
 #### Acknowledgement
 Parts of the SPIFFS upload mechanism are based on this [repository](https://github.com/smford/esp32-asyncwebserver-fileupload-example).
