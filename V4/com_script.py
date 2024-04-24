@@ -1,3 +1,5 @@
+# Auth: Jatan Pandya
+
 import serial
 import time
 
