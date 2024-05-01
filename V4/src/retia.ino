@@ -75,7 +75,10 @@ void IRAM_ATTR onTimer() {
 
 void transmitToDAC(int value) {
   dac.setVoltage(value, false);
+  Serial.print("Set Voltage to ");
+  Serial.println(value);
 }
+
 
 //void rebootESP(String message) {
 //  Serial.print("Rebooting ESP32: ");
@@ -264,25 +267,53 @@ void loop() {
 //  }
 }
 
+// void handleSerialCommand(String command) {
+//   if (command.equals("DeviceName")) {
+// //    String fileList = listFiles(false);
+//     Serial.println(""); 
+//     Serial.println("--CP200-v1.0.0--");
+//     Serial.println("");
+//   } else if (command.equals("runDac")) {
+// //    selectFileToRunDAC();
+//   } else if (command.equals("stopDac")) {
+//     onFlag = false;
+//     Serial.println("DAC subroutine stopped.");
+//   } else if (command) {
+// //    Serial.println(command);
+// //    Serial.println("DAC Transmit started ...");
+//     trasmitter(command);
+//   } else {
+//     Serial.println("[API] Invalid command");
+//   }
+// }
+
 void handleSerialCommand(String command) {
-  if (command.equals("DeviceName")) {
-//    String fileList = listFiles(false);
+  // Check if the command is a number
+  bool isNumber = true;
+  for (size_t i = 0; i < command.length(); i++) {
+    if (!isdigit(command[i])) {
+      isNumber = false;
+      break;
+    }
+  }
+
+  if (isNumber) {
+    // If the command is a number, pass it to the transmitter
+    trasmitter(command);
+  } else if (command.equals("DeviceName")) {
     Serial.println(""); 
     Serial.println("--CP200-v1.0.0--");
     Serial.println("");
   } else if (command.equals("runDac")) {
-//    selectFileToRunDAC();
+    // selectFileToRunDAC();
   } else if (command.equals("stopDac")) {
     onFlag = false;
     Serial.println("DAC subroutine stopped.");
-  } else if (command) {
-//    Serial.println(command);
-//    Serial.println("DAC Transmit started ...");
-    trasmitter(command);
   } else {
     Serial.println("[API] Invalid command");
   }
 }
+
 
 
 //void listFilesWithNumbers() {
