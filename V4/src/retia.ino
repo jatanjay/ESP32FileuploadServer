@@ -20,7 +20,7 @@
 //#include "webpages.h"
 
 #define FIRMWARE_VERSION "v1.0.0"
-#define DAC_ADDRESS 0x60
+#define DAC_ADDRESS 0x62
 
 //String hostname = "Retia_CP200";
 //const String default_ssid = "Verizon_J9SPGP";
@@ -288,10 +288,10 @@ void loop() {
 // }
 
 void handleSerialCommand(String command) {
-  // Check if the command is a number
+  // Check if the command is a number (integer or float)
   bool isNumber = true;
   for (size_t i = 0; i < command.length(); i++) {
-    if (!isdigit(command[i])) {
+    if (!isdigit(command[i]) && command[i] != '.') {
       isNumber = false;
       break;
     }
@@ -313,6 +313,7 @@ void handleSerialCommand(String command) {
     Serial.println("[API] Invalid command");
   }
 }
+
 
 
 

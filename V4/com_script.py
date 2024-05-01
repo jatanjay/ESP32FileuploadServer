@@ -3,7 +3,7 @@
 import serial
 import time
 
-COM_PORT = 'COM19'
+COM_PORT = 'COM23'
 BAUD_RATE = 115200
 FILE_NAME = "sine_1.25Hz.txt"
 SAMPLE_TIME = 0.007
@@ -22,6 +22,7 @@ def read_file(ser):
             for line in file:
                 line = line.strip() 
                 send_data(line, ser)
+                print(line)
                 time.sleep(SAMPLE_TIME)
     except FileNotFoundError as e:
         print(f"Failed to open file {FILE_NAME}: {e}")
