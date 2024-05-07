@@ -1,19 +1,31 @@
 # Auth: Jatan Pandya
 
 import serial
+import serial.tools.list_ports
 import time
 
-COM_PORT = 'COM24'
 BAUD_RATE = 115200
 FILE_NAME = "sine_1.25Hz.txt"
 SAMPLE_TIME = 0.007
 
+def find_serial_port():
+    ports = serial.tools.list_ports.comports()
+    for port in ports:
+        if "USB" in port.description:
+            return port.device
+    return None
+
 def open_serial_port():
-    try:
-        ser = serial.Serial(COM_PORT, BAUD_RATE)
-        return ser
-    except serial.SerialException as e:
-        print(f"Failed to open serial port {COM_PORT}: {e}")
+    com_port = find_serial_port()
+    if com_port:
+        try:
+            ser = serial.Serial(com_port, BAUD_RATE)
+            return ser
+        except serial.SerialException as e:
+            print(f"Failed to open serial port {com_port}: {e}")
+            return None
+    else:
+        print("ESP device not found.")
         return None
 
 def read_file(ser):
@@ -22,7 +34,6 @@ def read_file(ser):
             for line in file:
                 line = line.strip() 
                 send_data(line, ser)
-                # print(line)
                 time.sleep(SAMPLE_TIME)
                 
     except FileNotFoundError as e:
