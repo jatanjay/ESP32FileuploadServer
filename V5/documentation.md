@@ -2,7 +2,7 @@
 ---
 
 # Retia CP200 Documentation
-### Author: Jatan Pandya
+### Author: Jatan Pandya (jatanjay212)
 ## Overview
 
 These scripts are designed to facilitate the transmission of serial data to an MCP4725 DAC using an ESP32 microcontroller. 
