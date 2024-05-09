@@ -20,7 +20,7 @@ The converted values are then transmitted to the MCP4725 DAC.
 This Python script operates on a host computer and interacts with the ESP32 microcontroller over a serial connection. 
 It reads data from a specified text file and sends it line by line to the ESP32 for DAC conversion and transmission. 
 
-By default, the script runs for the file `all_merged.txt` which is the combined version of all the sample txt files supplied (`Stable Baseline.txt`, `sine_1.25Hz.txt`, `Demo Mode BP.txt` etc.)
+By default, the script runs for the file `all_merged.txt` which is the combined version of all the sample txt files originally supplied (`Stable Baseline.txt`, `sine_1.25Hz.txt`, `Demo Mode BP.txt` etc.)
 
 The script will automatically detect the connected ESP32 device and transmit data from the specified file to the ESP32 for transmission.
 
